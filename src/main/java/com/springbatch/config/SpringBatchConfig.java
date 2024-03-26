@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -79,6 +81,7 @@ public class SpringBatchConfig {
                 .reader(itemreader())
                 .processor(processor())
                 .writer(writer())
+                .taskExecutor(taskExecutor())
                 .build();
     }
     @Bean
@@ -87,5 +90,12 @@ public class SpringBatchConfig {
         return new JobBuilder("importCustomer",jobRepository)
                 .start(importStep())
                 .build();
+    }
+    @Bean
+    public TaskExecutor taskExecutor()
+    {
+        SimpleAsyncTaskExecutor asyncTaskExecutor=new SimpleAsyncTaskExecutor();
+        asyncTaskExecutor.setConcurrencyLimit(10);
+        return asyncTaskExecutor;
     }
 }

@@ -21,6 +21,9 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.sql.Time;
+import java.util.concurrent.TimeUnit;
+
 @Configuration
 public class SpringBatchDbtoDb {
     @Autowired
@@ -42,7 +45,6 @@ public class SpringBatchDbtoDb {
                 .pageSize(10) // Adjust the page size as needed
                 .build();
     }
-
     @Bean
     public RepositoryItemWriter<CustomerDetails> writer() {
         return new RepositoryItemWriterBuilder<CustomerDetails>()
@@ -63,6 +65,8 @@ public class SpringBatchDbtoDb {
                 .processor(processor())
                 .writer(writer())
                 .transactionManager(platformTransactionManager)
+                .listener(new DelayChunkListener(TimeUnit.SECONDS.toMillis(10)))
+                .taskExecutor(taskExecutor())
                 .build();
     }
     @Bean

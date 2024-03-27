@@ -15,8 +15,10 @@ public class CustomerProcessor implements ItemProcessor<Customer, CustomerDetail
         customerDetails.setCountry(item.getCountry());
         customerDetails.setGender(item.getGender());
         customerDetails.setContactNo(item.getContactNo());
-        customerDetails.setFirstname(item.getFirstname());
-        customerDetails.setLastname(item.getLastname());
+        customerDetails.setFirstName(item.getFirstname());
+        customerDetails.setLastName(item.getLastname());
+        String fullname=item.getFirstname()+" "+item.getLastname();
+        customerDetails.setFullName(fullname);
         return customerDetails;
     }
 }

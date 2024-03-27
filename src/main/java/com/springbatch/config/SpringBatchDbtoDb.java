@@ -31,8 +31,6 @@ public class SpringBatchDbtoDb {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
     @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
     private PlatformTransactionManager platformTransactionManager;
     @Autowired
     private JobRepository jobRepository;
@@ -65,7 +63,7 @@ public class SpringBatchDbtoDb {
                 .processor(processor())
                 .writer(writer())
                 .transactionManager(platformTransactionManager)
-                .listener(new DelayChunkListener(TimeUnit.SECONDS.toMillis(10)))//Set Delay
+                .listener(new DelayChunkListener(TimeUnit.SECONDS.toMillis(1)))//Set Delay
                 .taskExecutor(taskExecutor())//called the task executor for parralle execution to improve performance
                 .build();
     }

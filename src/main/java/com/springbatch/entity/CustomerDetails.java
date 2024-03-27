@@ -13,11 +13,12 @@ import lombok.Setter;
 public class CustomerDetails {
     @Id
     private int id;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     private String email;
     private String gender;
     private String contactNo;
     private String country;
     private String dob;
+    private String fullName;
 }

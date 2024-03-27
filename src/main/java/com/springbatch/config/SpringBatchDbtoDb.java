@@ -37,7 +37,7 @@ public class SpringBatchDbtoDb {
     @Autowired
     private JobRepository jobRepository;
     @Bean
-    public JpaPagingItemReader<Customer> reader() {
+    public JpaPagingItemReader<Customer> reader() {//Read the data from Customer
         return new JpaPagingItemReaderBuilder<Customer>()
                 .name("customerItemReader")
                 .entityManagerFactory(entityManagerFactory)
@@ -46,7 +46,7 @@ public class SpringBatchDbtoDb {
                 .build();
     }
     @Bean
-    public RepositoryItemWriter<CustomerDetails> writer() {
+    public RepositoryItemWriter<CustomerDetails> writer() {//write the data in CustomerDetails
         return new RepositoryItemWriterBuilder<CustomerDetails>()
                 .repository(customerDetailsRepository)
                 .methodName("save")
@@ -56,28 +56,28 @@ public class SpringBatchDbtoDb {
     public CustomerProcessor processor()
     {
         return new CustomerProcessor();
-    }
+    }//Process the data
     @Bean
-    public Step importStep() {
+    public Step importStep() {//create the step containing reader, process and writer
         return new StepBuilder("importStep",jobRepository)
                 .<Customer, CustomerDetails>chunk(10,platformTransactionManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
                 .transactionManager(platformTransactionManager)
-                .listener(new DelayChunkListener(TimeUnit.SECONDS.toMillis(10)))
-                .taskExecutor(taskExecutor())
+                .listener(new DelayChunkListener(TimeUnit.SECONDS.toMillis(10)))//Set Delay
+                .taskExecutor(taskExecutor())//called the task executor for parralle execution to improve performance
                 .build();
     }
     @Bean
-    public Job runJob()
+    public Job runJob()//Run the job
     {
         return new JobBuilder("importCustomer",jobRepository)
                 .start(importStep())
                 .build();
     }
     @Bean
-    public TaskExecutor taskExecutor()
+    public TaskExecutor taskExecutor()//Created 10 thread
     {
         SimpleAsyncTaskExecutor asyncTaskExecutor=new SimpleAsyncTaskExecutor();
         asyncTaskExecutor.setConcurrencyLimit(10);
